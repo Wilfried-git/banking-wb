@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  passwordHash      String
+  status            String   // 'ACTIVE', 'SUSPENDED'
+  lastLoginAt       DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  customer          Customer?
+}
+
+model Customer {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime
+  address           String
+  idType            String
+  idNumber          String
+  createdAt         DateTime @default(now())
+  accounts          Account[]
+  beneficiaries     Beneficiary[]
+}
+
+model Account {
+  id                String        @id @default(uuid())
+  customerId        String
+  customer          Customer      @relation(fields: [customerId], references: [id])
+  accountNumber     String        @unique // IBAN or custom format
+  type              String        // 'SAVINGS', 'CHECKING'
+  balance           Decimal       @default(0.00)
+  currency          String        @default("EUR")
+  status            String        @default("OPEN") // 'OPEN', 'FROZEN', 'CLOSED'
+  
+  // Relations for transactions
+  sentTransactions     Transaction[] @relation("SourceAccount")
+  receivedTransactions Transaction[] @relation("DestinationAccount")
+}
+
+model Transaction {
+  id                String    @id @default(uuid())
+  sourceAccountId   String
+  sourceAccount     Account   @relation("SourceAccount", fields: [sourceAccountId], references: [id])
+  destAccountId     String
+  destAccount       Account   @relation("DestinationAccount", fields: [destAccountId], references: [id])
+  amount            Decimal
+  type              String    // 'TRANSFER', 'DEPOSIT', 'WITHDRAWAL'
+  status            String    // 'PENDING', 'COMPLETED', 'FAILED'
+  reference         String    @unique
+  executedAt        DateTime  @default(now())
+}
+
+model Beneficiary {
+  id                String   @id @default(uuid())
+  customerId        String
+  customer          Customer @relation(fields: [customerId], references: [id])
+  name              String
+  accountNumber     String
+  bankName          String
+  createdAt         DateTime @default(now())
+}
