@@ -85,6 +85,17 @@ let TransactionsService = class TransactionsService {
             });
         });
     }
+    async findAll(userId) {
+        return this.prisma.transaction.findMany({
+            where: {
+                OR: [
+                    { sourceAccount: { customer: { userId } } },
+                    { destAccount: { customer: { userId } } },
+                ],
+            },
+            orderBy: { executedAt: 'desc' },
+        });
+    }
 };
 exports.TransactionsService = TransactionsService;
 exports.TransactionsService = TransactionsService = __decorate([

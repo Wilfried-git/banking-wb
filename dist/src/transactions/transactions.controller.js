@@ -32,6 +32,9 @@ let TransactionsController = class TransactionsController {
     transfer(req, dto) {
         return this.transactionsService.transfer(req.user.userId, dto);
     }
+    findAll(req) {
+        return this.transactionsService.findAll(req.user.userId);
+    }
 };
 exports.TransactionsController = TransactionsController;
 __decorate([
@@ -60,6 +63,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_transaction_dto_1.TransferDto]),
     __metadata("design:returntype", void 0)
 ], TransactionsController.prototype, "transfer", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Consulter mon historique de transactions' }),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TransactionsController.prototype, "findAll", null);
 exports.TransactionsController = TransactionsController = __decorate([
     (0, swagger_1.ApiTags)('Transactions'),
     (0, swagger_1.ApiBearerAuth)(),

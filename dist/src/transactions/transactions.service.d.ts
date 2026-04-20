@@ -35,4 +35,14 @@ export declare class TransactionsService {
         reference: string;
         executedAt: Date;
     }>;
+    findAll(userId: string): Promise<{
+        id: string;
+        sourceAccountId: string;
+        destAccountId: string;
+        amount: Prisma.Decimal;
+        type: string;
+        status: string;
+        reference: string;
+        executedAt: Date;
+    }[]>;
 }

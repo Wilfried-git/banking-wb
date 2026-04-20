@@ -83,4 +83,17 @@ export class TransactionsService {
       });
     });
   }
+
+  // Voir l'historique de l'utilisateur (toutes les transactions liées à ses comptes)
+  async findAll(userId: string) {
+    return this.prisma.transaction.findMany({
+      where: {
+        OR: [
+          { sourceAccount: { customer: { userId } } },
+          { destAccount: { customer: { userId } } },
+        ],
+      },
+      orderBy: { executedAt: 'desc' },
+    });
+  }
 }

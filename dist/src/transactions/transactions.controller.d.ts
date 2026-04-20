@@ -33,4 +33,14 @@ export declare class TransactionsController {
         reference: string;
         executedAt: Date;
     }>;
+    findAll(req: any): Promise<{
+        id: string;
+        sourceAccountId: string;
+        destAccountId: string;
+        amount: import("@prisma/client/runtime/library").Decimal;
+        type: string;
+        status: string;
+        reference: string;
+        executedAt: Date;
+    }[]>;
 }
