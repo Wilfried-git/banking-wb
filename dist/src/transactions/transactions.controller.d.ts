@@ -1,12 +1,36 @@
-import { TransactionsService } from './transactions.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { DepositDto, TransferDto, WithdrawalDto } from "./dto/create-transaction.dto";
+import { TransactionsService } from "./transactions.service";
 export declare class TransactionsController {
     private readonly transactionsService;
     constructor(transactionsService: TransactionsService);
-    create(createTransactionDto: CreateTransactionDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateTransactionDto: UpdateTransactionDto): string;
-    remove(id: string): string;
+    deposit(dto: DepositDto): Promise<{
+        id: string;
+        sourceAccountId: string;
+        destAccountId: string;
+        amount: import("@prisma/client/runtime/library").Decimal;
+        type: string;
+        status: string;
+        reference: string;
+        executedAt: Date;
+    }>;
+    withdraw(req: any, dto: WithdrawalDto): Promise<{
+        id: string;
+        sourceAccountId: string;
+        destAccountId: string;
+        amount: import("@prisma/client/runtime/library").Decimal;
+        type: string;
+        status: string;
+        reference: string;
+        executedAt: Date;
+    }>;
+    transfer(req: any, dto: TransferDto): Promise<{
+        id: string;
+        sourceAccountId: string;
+        destAccountId: string;
+        amount: import("@prisma/client/runtime/library").Decimal;
+        type: string;
+        status: string;
+        reference: string;
+        executedAt: Date;
+    }>;
 }

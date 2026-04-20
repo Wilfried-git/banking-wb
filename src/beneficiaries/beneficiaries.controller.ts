@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BeneficiariesService } from './beneficiaries.service';
 import { CreateBeneficiaryDto } from './dto/create-beneficiary.dto';
-import { UpdateBeneficiaryDto } from './dto/update-beneficiary.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiTags('Beneficiaries')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('beneficiaries')
 export class BeneficiariesController {
-  constructor(private readonly beneficiariesService: BeneficiariesService) {}
+  constructor(private readonly beneficiariesService: BeneficiariesService) { }
 
   @Post()
-  create(@Body() createBeneficiaryDto: CreateBeneficiaryDto) {
-    return this.beneficiariesService.create(createBeneficiaryDto);
+  @ApiOperation({ summary: 'Ajouter un bénéficiaire à ma liste' })
+  create(@Req() req: any, @Body() dto: CreateBeneficiaryDto) {
+    return this.beneficiariesService.create(req.user.userId, dto);
   }
 
   @Get()
-  findAll() {
-    return this.beneficiariesService.findAll();
+  @ApiOperation({ summary: 'Voir ma liste de bénéficiaires' })
+  findAll(@Req() req: any) {
+    return this.beneficiariesService.findAll(req.user.userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.beneficiariesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBeneficiaryDto: UpdateBeneficiaryDto) {
-    return this.beneficiariesService.update(+id, updateBeneficiaryDto);
+  @ApiOperation({ summary: 'Détails d’un de mes bénéficiaires' })
+  findOne(@Req() req: any, @Param('id') id: string) {
+    return this.beneficiariesService.findOne(req.user.userId, id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.beneficiariesService.remove(+id);
+  @ApiOperation({ summary: 'Supprimer un bénéficiaire de ma liste' })
+  remove(@Req() req: any, @Param('id') id: string) {
+    return this.beneficiariesService.remove(req.user.userId, id);
   }
 }

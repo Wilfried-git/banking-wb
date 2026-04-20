@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiTags('Accounts')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('accounts')
 export class AccountsController {
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(private readonly accountsService: AccountsService) { }
 
   @Post()
-  create(@Body() createAccountDto: CreateAccountDto) {
-    return this.accountsService.create(createAccountDto);
+  @ApiOperation({ summary: 'Ouvrir un compte pour l’utilisateur connecté' })
+  create(@Req() req: any, @Body() dto: CreateAccountDto) {
+    return this.accountsService.create(req.user.userId, dto);
   }
 
   @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  @ApiOperation({ summary: 'Lister MES comptes' })
+  findAll(@Req() req: any) {
+    return this.accountsService.findAll(req.user.userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountsService.update(+id, updateAccountDto);
+  @ApiOperation({ summary: 'Détails d’un de MES comptes' })
+  findOne(@Req() req: any, @Param('id') id: string) {
+    return this.accountsService.findOne(req.user.userId, id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountsService.remove(+id);
+  @ApiOperation({ summary: 'Supprimer un de MES comptes (si solde = 0)' })
+  remove(@Req() req: any, @Param('id') id: string) {
+    return this.accountsService.remove(req.user.userId, id);
   }
 }

@@ -1,34 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TransactionsService } from './transactions.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { DepositDto, TransferDto, WithdrawalDto } from "./dto/create-transaction.dto";
+import { TransactionsService } from "./transactions.service";
 
+@ApiTags('Transactions')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactionsService: TransactionsService) { }
 
-  @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  @Post('deposit')
+  @ApiOperation({ summary: 'Déposer de l’argent sur un compte' })
+  deposit(@Body() dto: DepositDto) {
+    return this.transactionsService.deposit(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  @Post('withdraw')
+  @ApiOperation({ summary: 'Retirer de l’argent d’un de mes comptes' })
+  withdraw(@Req() req: any, @Body() dto: WithdrawalDto) {
+    return this.transactionsService.withdraw(req.user.userId, dto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionsService.update(+id, updateTransactionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  @Post('transfer')
+  @ApiOperation({ summary: 'Virement vers un autre compte' })
+  transfer(@Req() req: any, @Body() dto: TransferDto) {
+    return this.transactionsService.transfer(req.user.userId, dto);
   }
 }

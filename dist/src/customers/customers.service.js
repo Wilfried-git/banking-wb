@@ -5,28 +5,63 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomersService = void 0;
 const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../prisma/prisma/prisma.service");
 let CustomersService = class CustomersService {
-    create(createCustomerDto) {
-        return 'This action adds a new customer';
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
     }
-    findAll() {
-        return `This action returns all customers`;
+    async create(createCustomerDto) {
+        try {
+            return await this.prisma.customer.create({
+                data: createCustomerDto,
+            });
+        }
+        catch (error) {
+            if (error.code === 'P2002') {
+                throw new common_1.ConflictException('Un profil client existe déjà pour cet utilisateur.');
+            }
+            throw error;
+        }
     }
-    findOne(id) {
-        return `This action returns a #${id} customer`;
+    async findAll() {
+        return this.prisma.customer.findMany({
+            include: { user: { select: { email: true, status: true } } },
+        });
     }
-    update(id, updateCustomerDto) {
-        return `This action updates a #${id} customer`;
+    async findOne(id) {
+        const customer = await this.prisma.customer.findUnique({
+            where: { id },
+            include: { accounts: true },
+        });
+        if (!customer) {
+            throw new common_1.NotFoundException(`Le client avec l'ID ${id} est introuvable.`);
+        }
+        return customer;
     }
-    remove(id) {
-        return `This action removes a #${id} customer`;
+    async update(id, updateCustomerDto) {
+        await this.findOne(id);
+        return this.prisma.customer.update({
+            where: { id },
+            data: updateCustomerDto,
+        });
+    }
+    async remove(id) {
+        await this.findOne(id);
+        return this.prisma.customer.delete({
+            where: { id },
+        });
     }
 };
 exports.CustomersService = CustomersService;
 exports.CustomersService = CustomersService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], CustomersService);
 //# sourceMappingURL=customers.service.js.map

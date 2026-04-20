@@ -14,67 +14,68 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccountsController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const accounts_service_1 = require("./accounts.service");
 const create_account_dto_1 = require("./dto/create-account.dto");
-const update_account_dto_1 = require("./dto/update-account.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let AccountsController = class AccountsController {
     accountsService;
     constructor(accountsService) {
         this.accountsService = accountsService;
     }
-    create(createAccountDto) {
-        return this.accountsService.create(createAccountDto);
+    create(req, dto) {
+        return this.accountsService.create(req.user.userId, dto);
     }
-    findAll() {
-        return this.accountsService.findAll();
+    findAll(req) {
+        return this.accountsService.findAll(req.user.userId);
     }
-    findOne(id) {
-        return this.accountsService.findOne(+id);
+    findOne(req, id) {
+        return this.accountsService.findOne(req.user.userId, id);
     }
-    update(id, updateAccountDto) {
-        return this.accountsService.update(+id, updateAccountDto);
-    }
-    remove(id) {
-        return this.accountsService.remove(+id);
+    remove(req, id) {
+        return this.accountsService.remove(req.user.userId, id);
     }
 };
 exports.AccountsController = AccountsController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, swagger_1.ApiOperation)({ summary: 'Ouvrir un compte pour l’utilisateur connecté' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_account_dto_1.CreateAccountDto]),
+    __metadata("design:paramtypes", [Object, create_account_dto_1.CreateAccountDto]),
     __metadata("design:returntype", void 0)
 ], AccountsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Lister MES comptes' }),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AccountsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Détails d’un de MES comptes' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], AccountsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_account_dto_1.UpdateAccountDto]),
-    __metadata("design:returntype", void 0)
-], AccountsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Supprimer un de MES comptes (si solde = 0)' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], AccountsController.prototype, "remove", null);
 exports.AccountsController = AccountsController = __decorate([
+    (0, swagger_1.ApiTags)('Accounts'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('accounts'),
     __metadata("design:paramtypes", [accounts_service_1.AccountsService])
 ], AccountsController);

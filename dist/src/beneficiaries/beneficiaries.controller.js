@@ -14,67 +14,68 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BeneficiariesController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const beneficiaries_service_1 = require("./beneficiaries.service");
 const create_beneficiary_dto_1 = require("./dto/create-beneficiary.dto");
-const update_beneficiary_dto_1 = require("./dto/update-beneficiary.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let BeneficiariesController = class BeneficiariesController {
     beneficiariesService;
     constructor(beneficiariesService) {
         this.beneficiariesService = beneficiariesService;
     }
-    create(createBeneficiaryDto) {
-        return this.beneficiariesService.create(createBeneficiaryDto);
+    create(req, dto) {
+        return this.beneficiariesService.create(req.user.userId, dto);
     }
-    findAll() {
-        return this.beneficiariesService.findAll();
+    findAll(req) {
+        return this.beneficiariesService.findAll(req.user.userId);
     }
-    findOne(id) {
-        return this.beneficiariesService.findOne(+id);
+    findOne(req, id) {
+        return this.beneficiariesService.findOne(req.user.userId, id);
     }
-    update(id, updateBeneficiaryDto) {
-        return this.beneficiariesService.update(+id, updateBeneficiaryDto);
-    }
-    remove(id) {
-        return this.beneficiariesService.remove(+id);
+    remove(req, id) {
+        return this.beneficiariesService.remove(req.user.userId, id);
     }
 };
 exports.BeneficiariesController = BeneficiariesController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, swagger_1.ApiOperation)({ summary: 'Ajouter un bénéficiaire à ma liste' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_beneficiary_dto_1.CreateBeneficiaryDto]),
+    __metadata("design:paramtypes", [Object, create_beneficiary_dto_1.CreateBeneficiaryDto]),
     __metadata("design:returntype", void 0)
 ], BeneficiariesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Voir ma liste de bénéficiaires' }),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], BeneficiariesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Détails d’un de mes bénéficiaires' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], BeneficiariesController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_beneficiary_dto_1.UpdateBeneficiaryDto]),
-    __metadata("design:returntype", void 0)
-], BeneficiariesController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Supprimer un bénéficiaire de ma liste' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], BeneficiariesController.prototype, "remove", null);
 exports.BeneficiariesController = BeneficiariesController = __decorate([
+    (0, swagger_1.ApiTags)('Beneficiaries'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('beneficiaries'),
     __metadata("design:paramtypes", [beneficiaries_service_1.BeneficiariesService])
 ], BeneficiariesController);

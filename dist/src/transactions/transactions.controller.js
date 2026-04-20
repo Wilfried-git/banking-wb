@@ -14,67 +14,56 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransactionsController = void 0;
 const common_1 = require("@nestjs/common");
-const transactions_service_1 = require("./transactions.service");
+const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const create_transaction_dto_1 = require("./dto/create-transaction.dto");
-const update_transaction_dto_1 = require("./dto/update-transaction.dto");
+const transactions_service_1 = require("./transactions.service");
 let TransactionsController = class TransactionsController {
     transactionsService;
     constructor(transactionsService) {
         this.transactionsService = transactionsService;
     }
-    create(createTransactionDto) {
-        return this.transactionsService.create(createTransactionDto);
+    deposit(dto) {
+        return this.transactionsService.deposit(dto);
     }
-    findAll() {
-        return this.transactionsService.findAll();
+    withdraw(req, dto) {
+        return this.transactionsService.withdraw(req.user.userId, dto);
     }
-    findOne(id) {
-        return this.transactionsService.findOne(+id);
-    }
-    update(id, updateTransactionDto) {
-        return this.transactionsService.update(+id, updateTransactionDto);
-    }
-    remove(id) {
-        return this.transactionsService.remove(+id);
+    transfer(req, dto) {
+        return this.transactionsService.transfer(req.user.userId, dto);
     }
 };
 exports.TransactionsController = TransactionsController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('deposit'),
+    (0, swagger_1.ApiOperation)({ summary: 'Déposer de l’argent sur un compte' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_transaction_dto_1.CreateTransactionDto]),
+    __metadata("design:paramtypes", [create_transaction_dto_1.DepositDto]),
     __metadata("design:returntype", void 0)
-], TransactionsController.prototype, "create", null);
+], TransactionsController.prototype, "deposit", null);
 __decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TransactionsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TransactionsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Post)('withdraw'),
+    (0, swagger_1.ApiOperation)({ summary: 'Retirer de l’argent d’un de mes comptes' }),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_transaction_dto_1.UpdateTransactionDto]),
+    __metadata("design:paramtypes", [Object, create_transaction_dto_1.WithdrawalDto]),
     __metadata("design:returntype", void 0)
-], TransactionsController.prototype, "update", null);
+], TransactionsController.prototype, "withdraw", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Post)('transfer'),
+    (0, swagger_1.ApiOperation)({ summary: 'Virement vers un autre compte' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, create_transaction_dto_1.TransferDto]),
     __metadata("design:returntype", void 0)
-], TransactionsController.prototype, "remove", null);
+], TransactionsController.prototype, "transfer", null);
 exports.TransactionsController = TransactionsController = __decorate([
+    (0, swagger_1.ApiTags)('Transactions'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('transactions'),
     __metadata("design:paramtypes", [transactions_service_1.TransactionsService])
 ], TransactionsController);

@@ -14,9 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomersController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const customers_service_1 = require("./customers.service");
 const create_customer_dto_1 = require("./dto/create-customer.dto");
 const update_customer_dto_1 = require("./dto/update-customer.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let CustomersController = class CustomersController {
     customersService;
     constructor(customersService) {
@@ -29,18 +31,21 @@ let CustomersController = class CustomersController {
         return this.customersService.findAll();
     }
     findOne(id) {
-        return this.customersService.findOne(+id);
+        return this.customersService.findOne(id);
     }
     update(id, updateCustomerDto) {
-        return this.customersService.update(+id, updateCustomerDto);
+        return this.customersService.update(id, updateCustomerDto);
     }
     remove(id) {
-        return this.customersService.remove(+id);
+        return this.customersService.remove(id);
     }
 };
 exports.CustomersController = CustomersController;
 __decorate([
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Créer un profil client (Customer)' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Le profil a été créé avec succès.' }),
+    (0, swagger_1.ApiResponse)({ status: 409, description: 'Un profil existe déjà pour cet utilisateur.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_customer_dto_1.CreateCustomerDto]),
@@ -48,12 +53,16 @@ __decorate([
 ], CustomersController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Récupérer la liste de tous les clients' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CustomersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Récupérer un client par son ID (UUID)' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Client trouvé.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Client introuvable.' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -61,6 +70,7 @@ __decorate([
 ], CustomersController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mettre à jour un profil client' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -69,12 +79,16 @@ __decorate([
 ], CustomersController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Supprimer un profil client' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CustomersController.prototype, "remove", null);
 exports.CustomersController = CustomersController = __decorate([
+    (0, swagger_1.ApiTags)('Customers'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('customers'),
     __metadata("design:paramtypes", [customers_service_1.CustomersService])
 ], CustomersController);
