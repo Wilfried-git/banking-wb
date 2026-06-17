@@ -5,15 +5,15 @@ export declare class CustomersService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(createCustomerDto: CreateCustomerDto): Promise<{
-        id: string;
+        userId: string;
         firstName: string;
         lastName: string;
         dateOfBirth: Date;
         address: string;
         idType: string;
         idNumber: string;
+        id: string;
         createdAt: Date;
-        userId: string;
     }>;
     findAll(): Promise<({
         user: {
@@ -21,57 +21,57 @@ export declare class CustomersService {
             status: string;
         };
     } & {
-        id: string;
+        userId: string;
         firstName: string;
         lastName: string;
         dateOfBirth: Date;
         address: string;
         idType: string;
         idNumber: string;
+        id: string;
         createdAt: Date;
-        userId: string;
     })[]>;
     findOne(id: string): Promise<{
         accounts: {
+            type: string;
             id: string;
             status: string;
-            customerId: string;
-            accountNumber: string;
-            type: string;
-            balance: import("@prisma/client/runtime/library").Decimal;
             currency: string;
+            accountNumber: string;
+            balance: import("@prisma/client/runtime/library").Decimal;
+            customerId: string;
         }[];
     } & {
-        id: string;
+        userId: string;
         firstName: string;
         lastName: string;
         dateOfBirth: Date;
         address: string;
         idType: string;
         idNumber: string;
+        id: string;
         createdAt: Date;
-        userId: string;
     }>;
     update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<{
-        id: string;
+        userId: string;
         firstName: string;
         lastName: string;
         dateOfBirth: Date;
         address: string;
         idType: string;
         idNumber: string;
+        id: string;
         createdAt: Date;
-        userId: string;
     }>;
     remove(id: string): Promise<{
-        id: string;
+        userId: string;
         firstName: string;
         lastName: string;
         dateOfBirth: Date;
         address: string;
         idType: string;
         idNumber: string;
+        id: string;
         createdAt: Date;
-        userId: string;
     }>;
 }

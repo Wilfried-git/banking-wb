@@ -5,34 +5,34 @@ export declare class BeneficiariesService {
     constructor(prisma: PrismaService);
     create(userId: string, dto: CreateBeneficiaryDto): Promise<{
         id: string;
+        createdAt: Date;
         name: string;
         accountNumber: string;
-        bankName: string;
-        createdAt: Date;
         customerId: string;
+        bankName: string;
     }>;
     findAll(userId: string): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
+        createdAt: Date;
         name: string;
         accountNumber: string;
-        bankName: string;
-        createdAt: Date;
         customerId: string;
+        bankName: string;
     }[]>;
     findOne(userId: string, beneficiaryId: string): Promise<{
         id: string;
+        createdAt: Date;
         name: string;
         accountNumber: string;
-        bankName: string;
-        createdAt: Date;
         customerId: string;
+        bankName: string;
     }>;
     remove(userId: string, beneficiaryId: string): Promise<{
         id: string;
+        createdAt: Date;
         name: string;
         accountNumber: string;
-        bankName: string;
-        createdAt: Date;
         customerId: string;
+        bankName: string;
     }>;
 }

@@ -5,39 +5,39 @@ export declare class AccountsService {
     constructor(prisma: PrismaService);
     private generateAccountNumber;
     create(userId: string, dto: CreateAccountDto): Promise<{
-        id: string;
-        accountNumber: string;
         type: string;
-        balance: import("@prisma/client/runtime/library").Decimal;
-        currency: string;
+        id: string;
         status: string;
+        currency: string;
+        accountNumber: string;
+        balance: import("@prisma/client/runtime/library").Decimal;
         customerId: string;
     }>;
     findAll(userId: string): Promise<{
-        id: string;
-        accountNumber: string;
         type: string;
-        balance: import("@prisma/client/runtime/library").Decimal;
-        currency: string;
+        id: string;
         status: string;
+        currency: string;
+        accountNumber: string;
+        balance: import("@prisma/client/runtime/library").Decimal;
         customerId: string;
     }[]>;
     findOne(userId: string, accountId: string): Promise<{
-        id: string;
-        accountNumber: string;
         type: string;
-        balance: import("@prisma/client/runtime/library").Decimal;
-        currency: string;
+        id: string;
         status: string;
+        currency: string;
+        accountNumber: string;
+        balance: import("@prisma/client/runtime/library").Decimal;
         customerId: string;
     }>;
     remove(userId: string, accountId: string): Promise<{
-        id: string;
-        accountNumber: string;
         type: string;
-        balance: import("@prisma/client/runtime/library").Decimal;
-        currency: string;
+        id: string;
         status: string;
+        currency: string;
+        accountNumber: string;
+        balance: import("@prisma/client/runtime/library").Decimal;
         customerId: string;
     }>;
 }

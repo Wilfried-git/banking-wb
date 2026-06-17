@@ -35,6 +35,9 @@ let TransactionsController = class TransactionsController {
     findAll(req) {
         return this.transactionsService.findAll(req.user.userId);
     }
+    findOne(req, id) {
+        return this.transactionsService.findAllAccount(req.user.userId, id);
+    }
 };
 exports.TransactionsController = TransactionsController;
 __decorate([
@@ -71,6 +74,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TransactionsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('account/:id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Détails d’un de MES comptes' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], TransactionsController.prototype, "findOne", null);
 exports.TransactionsController = TransactionsController = __decorate([
     (0, swagger_1.ApiTags)('Transactions'),
     (0, swagger_1.ApiBearerAuth)(),

@@ -6,42 +6,52 @@ export declare class TransactionsService {
     constructor(prisma: PrismaService);
     private generateRef;
     deposit(dto: DepositDto): Promise<{
+        type: string;
         id: string;
+        status: string;
+        amount: Prisma.Decimal;
         sourceAccountId: string;
         destAccountId: string;
-        amount: Prisma.Decimal;
-        type: string;
-        status: string;
         reference: string;
         executedAt: Date;
     }>;
     withdraw(userId: string, dto: WithdrawalDto): Promise<{
+        type: string;
         id: string;
+        status: string;
+        amount: Prisma.Decimal;
         sourceAccountId: string;
         destAccountId: string;
-        amount: Prisma.Decimal;
-        type: string;
-        status: string;
         reference: string;
         executedAt: Date;
     }>;
     transfer(userId: string, dto: TransferDto): Promise<{
+        type: string;
         id: string;
+        status: string;
+        amount: Prisma.Decimal;
         sourceAccountId: string;
         destAccountId: string;
-        amount: Prisma.Decimal;
-        type: string;
-        status: string;
         reference: string;
         executedAt: Date;
     }>;
     findAll(userId: string): Promise<{
+        type: string;
         id: string;
+        status: string;
+        amount: Prisma.Decimal;
         sourceAccountId: string;
         destAccountId: string;
-        amount: Prisma.Decimal;
+        reference: string;
+        executedAt: Date;
+    }[]>;
+    findAllAccount(userId: string, accountId: string): Promise<{
         type: string;
+        id: string;
         status: string;
+        amount: Prisma.Decimal;
+        sourceAccountId: string;
+        destAccountId: string;
         reference: string;
         executedAt: Date;
     }[]>;

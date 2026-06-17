@@ -12,11 +12,11 @@ export declare class AuthController {
         access_token: string;
     }>;
     getProfile(req: any): Promise<{
-        email: string;
         id: string;
+        createdAt: Date;
+        email: string;
         status: string;
         lastLoginAt: Date;
-        createdAt: Date;
         updatedAt: Date;
     }>;
 }
